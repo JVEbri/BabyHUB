@@ -1,0 +1,12 @@
+{
+  "name": "rtsp-ws",
+  "version": "1.0.0",
+  "description": "RTSP audio volume analysis with WebSocket support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

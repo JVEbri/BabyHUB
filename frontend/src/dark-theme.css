@@ -1,0 +1,93 @@
+/* Tema oscuro para BabyHUB */
+.dark body {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+.dark .text-gray-700,
+.dark .text-gray-600 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-100 {
+  border-color: #334155 !important;
+}
+
+/* Quitar hovers raros */
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-cyan-50:hover {
+  background-color: #334155 !important;
+}
+
+/* Colores de acento */
+.dark .bg-cyan-600 {
+  background-color: #0891b2 !important;
+}
+
+.dark .hover\:bg-cyan-700:hover {
+  background-color: #0e7490 !important;
+}
+
+.dark .text-cyan-700,
+.dark .text-cyan-600 {
+  color: #22d3ee !important;
+}
+
+.dark .text-cyan-800 {
+  color: #155e75 !important;
+}
+
+/* Cards de botones */
+.dark .bg-blue-50 {
+  background-color: #1e3a8a !important;
+}
+
+.dark .bg-green-50 {
+  background-color: #052e16 !important;
+}
+
+.dark .bg-yellow-50 {
+  background-color: #422006 !important;
+}
+
+.dark .bg-red-50 {
+  background-color: #450a0a !important;
+}
+
+.dark .text-blue-600 {
+  color: #60a5fa !important;
+}
+
+.dark .text-green-600 {
+  color: #4ade80 !important;
+}
+
+.dark .text-yellow-600 {
+  color: #fbbf24 !important;
+}
+
+.dark .text-red-600 {
+  color: #f87171 !important;
+}
+
+/* Calendar */
+.dark .border-cyan-100 {
+  border-color: #155e75 !important;
+}
+
+/* Sensor overlay */
+.dark .bg-black\/50 {
+  background-color: rgba(15, 23, 42, 0.8) !important;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "babyhub-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "pnpm": {
+    "approvedBuilds": ["esbuild"]
+  },
+  "description": "BabyHUB - Hub para monitoreo y cuidado del bebé",
+  "scripts": {
+    "dev": "pnpm --parallel dev",
+    "dev:backend": "cd backend && pnpm dev",
+    "dev:frontend": "cd frontend && pnpm dev",
+    "build": "pnpm --parallel build",
+    "start": "pnpm --parallel start",
+    "migrate": "cd backend && pnpm migrate",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build"
+  },
+  "devDependencies": {
+    "pnpm": "^9.0.0"
+  }
+}

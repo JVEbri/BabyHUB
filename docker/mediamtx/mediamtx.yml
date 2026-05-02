@@ -1,0 +1,37 @@
+# mediamtx configuration
+
+# Authentication
+authMethod: internal
+authInternalUsers:
+  - user: "admin"
+    pass: "admin"
+    permissions:
+      - action: read
+      - action: api
+      - action: metrics
+      - action: pprof
+
+# WebRTC settings
+webrtc: true
+webrtcAddress: :8889
+
+# RTSP settings  
+rtsp: true
+rtspAddress: :8555
+
+# HLS settings
+hls: true
+hlsAddress: :8888
+
+# API settings
+api: true
+apiAddress: :9997
+
+# Paths (cameras will be added dynamically via API)
+paths:
+  # Template for dynamic paths
+  "~^.*$":
+    source: "rtsp://admin:joselito88@192.168.1.115"
+    sourceOnDemand: true
+    sourceOnDemandStartTimeout: "10s"
+    sourceOnDemandCloseAfter: "30s"

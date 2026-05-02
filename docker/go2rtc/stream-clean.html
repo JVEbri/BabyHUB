@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera</title>
+    <style>
+        body {
+            background: black;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        html {
+            height: 100%;
+            width: 100%;
+        }
+        video-stream {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<script type="module" src="./video-stream.js"></script>
+<script type="module">
+    const params = new URLSearchParams(location.search);
+    const src = params.get('src');
+    
+    if (src) {
+        const video = document.createElement('video-stream');
+        video.src = new URL('api/ws?src=' + encodeURIComponent(src), location.href);
+        video.background = true;
+        video.mode = params.get('mode') || 'mse,webrtc';
+        document.body.appendChild(video);
+    }
+</script>
+</body>
+</html>

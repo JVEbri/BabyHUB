@@ -1,0 +1,649 @@
+openapi: 3.1.0
+info:
+  title: BabyHUB API
+  description: API para el hub de monitoreo y cuidado del bebé
+  version: 0.2.0
+  contact:
+    name: BabyHUB
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desarrollo local
+  - url: http://localhost:3000
+    description: Servidor Docker local
+paths:
+  /api/cameras:
+    get:
+      summary: Listar todas las cámaras
+      tags: [Cameras]
+      responses:
+        '200':
+          description: Lista de cámaras
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Camera'
+    post:
+      summary: Crear una nueva cámara
+      tags: [Cameras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CameraInput'
+      responses:
+        '201':
+          description: Cámara creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/cameras/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener una cámara por ID
+      tags: [Cameras]
+      responses:
+        '200':
+          description: Cámara encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Actualizar una cámara
+      tags: [Cameras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CameraInput'
+      responses:
+        '200':
+          description: Cámara actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Camera'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Eliminar una cámara
+      tags: [Cameras]
+      responses:
+        '204':
+          description: Cámara eliminada
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/cameras/{id}/stream-url:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener URL de stream WebRTC para la cámara
+      tags: [Cameras]
+      responses:
+        '200':
+          description: URL del stream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StreamUrl'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/cameras/{id}/config:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener configuración de la cámara
+      tags: [Cameras]
+      responses:
+        '200':
+          description: Configuración de la cámara
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/cameras/{id}/audio:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      summary: Activar/desactivar audio de la cámara
+      tags: [Cameras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [enable]
+              properties:
+                enable:
+                  type: boolean
+      responses:
+        '200':
+          description: Audio actualizado
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/cameras/{id}/ptz:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      summary: Mover cámara PTZ
+      tags: [Cameras]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PTZInput'
+      responses:
+        '200':
+          description: Movimiento PTZ ejecutado
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/cameras/{id}/ptz/stop:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      summary: Detener movimiento PTZ
+      tags: [Cameras]
+      responses:
+        '200':
+          description: Movimiento detenido
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/buttons:
+    get:
+      summary: Listar todos los botones
+      tags: [Buttons]
+      responses:
+        '200':
+          description: Lista de botones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Button'
+    post:
+      summary: Crear un nuevo botón
+      tags: [Buttons]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ButtonInput'
+      responses:
+        '201':
+          description: Botón creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Button'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/buttons/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener un botón por ID
+      tags: [Buttons]
+      responses:
+        '200':
+          description: Botón encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Button'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Actualizar un botón
+      tags: [Buttons]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ButtonInput'
+      responses:
+        '200':
+          description: Botón actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Button'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Eliminar un botón
+      tags: [Buttons]
+      responses:
+        '204':
+          description: Botón eliminado
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/buttons/{id}/presses:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener historial de pulsaciones de un botón
+      tags: [Buttons]
+      responses:
+        '200':
+          description: Historial de pulsaciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ButtonPress'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/button-presses:
+    post:
+      summary: Registrar una pulsación de botón
+      tags: [Buttons]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ButtonPressInput'
+      responses:
+        '201':
+          description: Pulsación registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ButtonPress'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/inventory-items:
+    get:
+      summary: Listar todos los items de inventario
+      tags: [Inventory]
+      responses:
+        '200':
+          description: Lista de items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryItem'
+    post:
+      summary: Crear un nuevo item de inventario
+      tags: [Inventory]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryItemInput'
+      responses:
+        '201':
+          description: Item creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/inventory-items/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Obtener un item de inventario por ID
+      tags: [Inventory]
+      responses:
+        '200':
+          description: Item encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      summary: Actualizar un item de inventario
+      tags: [Inventory]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryItemInput'
+      responses:
+        '200':
+          description: Item actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Eliminar un item de inventario
+      tags: [Inventory]
+      responses:
+        '204':
+          description: Item eliminado
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/inventory-transactions:
+    post:
+      summary: Registrar una transacción de inventario (consumo/entrada)
+      tags: [Inventory]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryTransactionInput'
+      responses:
+        '201':
+          description: Transacción registrada, stock actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/sensor-readings:
+    post:
+      summary: Registrar una lectura de sensor
+      tags: [Sensors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SensorReadingInput'
+      responses:
+        '201':
+          description: Lectura registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorReading'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /api/sensor-readings/latest:
+    get:
+      summary: Obtener las últimas lecturas de sensores
+      tags: [Sensors]
+      responses:
+        '200':
+          description: Últimas lecturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SensorReading'
+components:
+  schemas:
+    Camera:
+      type: object
+      required: [id, name, rtspUrl]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        rtspUrl:
+          type: string
+          description: URL RTSP de la cámara
+        streamName:
+          type: string
+          description: Nombre del stream en go2rtc
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CameraInput:
+      type: object
+      required: [name, rtspUrl]
+      properties:
+        name:
+          type: string
+        rtspUrl:
+          type: string
+    StreamUrl:
+      type: object
+      properties:
+        streamUrl:
+          type: string
+          example: ws://localhost:1984/api/ws?src=camera1
+    PTZInput:
+      type: object
+      required: [direction, action]
+      properties:
+        direction:
+          type: string
+          enum: [up, down, left, right, zoomIn, zoomOut]
+        action:
+          type: string
+          enum: [start, stop]
+        speed:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 32
+    Button:
+      type: object
+      required: [id, label]
+      properties:
+        id:
+          type: string
+          format: uuid
+        label:
+          type: string
+        icon:
+          type: string
+          description: Emoji o nombre de icono
+        color:
+          type: string
+          description: Color en formato hex
+        lastPressedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    ButtonInput:
+      type: object
+      required: [label]
+      properties:
+        label:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+    ButtonPress:
+      type: object
+      required: [id, buttonId, pressedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        buttonId:
+          type: string
+          format: uuid
+        pressedAt:
+          type: string
+          format: date-time
+    ButtonPressInput:
+      type: object
+      required: [buttonId]
+      properties:
+        buttonId:
+          type: string
+          format: uuid
+    InventoryItem:
+      type: object
+      required: [id, name, quantity, unit]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        quantity:
+          type: integer
+          minimum: 0
+        unit:
+          type: string
+          description: Unidad de medida (pcs, ml, etc.)
+        lowStockThreshold:
+          type: integer
+          description: Umbral para alerta de stock bajo
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    InventoryItemInput:
+      type: object
+      required: [name, quantity, unit]
+      properties:
+        name:
+          type: string
+        quantity:
+          type: integer
+          minimum: 0
+        unit:
+          type: string
+          enum: [pcs, ml, g, kg]
+        lowStockThreshold:
+          type: integer
+          minimum: 0
+    InventoryTransactionInput:
+      type: object
+      required: [itemId, quantity, type]
+      properties:
+        itemId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          minimum: 1
+        type:
+          type: string
+          enum: [consume, restock]
+    SensorReading:
+      type: object
+      required: [id, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        temperature:
+          type: number
+          nullable: true
+        humidity:
+          type: number
+          nullable: true
+        cameraId:
+          type: string
+          format: uuid
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+    SensorReadingInput:
+      type: object
+      properties:
+        temperature:
+          type: number
+          description: Temperatura en Celsius
+        humidity:
+          type: number
+          description: Humedad relativa en %
+        cameraId:
+          type: string
+          format: uuid
+  responses:
+    BadRequest:
+      description: Solicitud incorrecta
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

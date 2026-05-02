@@ -1,0 +1,16 @@
+api:
+  listen: ":1984"
+  username: ""
+  password: ""
+  origin: "*"
+  cors:
+    origin: ["*"]
+    credentials: true
+
+rtsp:
+  listen: ":8554"
+
+streams:
+  cam_1777497834736: rtsp://admin:joselito88@192.168.1.115
+  # Las cámaras se añaden dinámicamente vía API
+  # Ejemplo: test: rtsp://user:pass@192.168.1.100:554/stream
