@@ -50,3 +50,12 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
   camera_id UUID REFERENCES cameras(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS calendar_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  event_date DATE NOT NULL,
+  event_time TIME,
+  details TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

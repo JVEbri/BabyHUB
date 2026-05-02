@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -14,7 +14,7 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U babyhub"]
+      test: [ "CMD-SHELL", "pg_isready -U babyhub" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -71,8 +71,8 @@ services:
       PORT: 3000
       DATABASE_URL: postgresql://babyhub:babyhub_local@postgres:5432/babyhub
       GO2RTC_API_URL: http://go2rtc:1984
-      GO2RTC_PUBLIC_URL: http://192.168.1.43:1984
-      RTSP_WS_URL: http://192.168.1.43:9002
+      GO2RTC_PUBLIC_URL: http://192.168.1.85:1984
+      RTSP_WS_URL: http://192.168.1.85:9002
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     depends_on:
       postgres:
@@ -96,7 +96,7 @@ services:
     container_name: babyhub-rtsp-ws
     restart: unless-stopped
     ports:
-      - "9002:9002"   # Audio analysis API
+      - "9002:9002" # Audio analysis API
     environment:
       - RTSP_URL=rtsp://admin:joselito88@192.168.1.115
     depends_on:

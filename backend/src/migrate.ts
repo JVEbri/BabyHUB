@@ -21,9 +21,11 @@ CREATE TABLE IF NOT EXISTS buttons (
   label TEXT NOT NULL,
   icon TEXT,
   color TEXT,
+  interval_hours INTEGER,
   last_pressed_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+ALTER TABLE buttons ADD COLUMN IF NOT EXISTS interval_hours INTEGER;
 CREATE TABLE IF NOT EXISTS button_presses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   button_id UUID REFERENCES buttons(id) ON DELETE CASCADE,
@@ -51,6 +53,15 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
   temperature NUMERIC,
   humidity NUMERIC,
   camera_id UUID REFERENCES cameras(id) ON DELETE SET NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS calendar_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  event_date DATE NOT NULL,
+  event_time TIME,
+  details TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 `;

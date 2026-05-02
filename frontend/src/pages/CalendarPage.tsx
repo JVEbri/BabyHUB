@@ -22,6 +22,9 @@ export default function CalendarPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [dayEvents, setDayEvents] = useState<CalendarEvent[]>([]);
 
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
   useEffect(() => {
     fetchEvents();
   }, [currentDate]);
@@ -136,30 +139,30 @@ export default function CalendarPage() {
       days.push(<div key={`empty-${i}`} className="bg-gray-50 min-h-20 md:min-h-24"></div>);
     }
 
-    const today = new Date();
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const dayEvents = events.filter(e => e.event_date.slice(0, 10) === dateStr);
       const isToday = today.getDate() === day && 
                        today.getMonth() === currentDate.getMonth() && 
                        today.getFullYear() === currentDate.getFullYear();
+      const isPast = dateStr < todayStr;
       
       days.push(
         <div
           key={day}
           onClick={() => handleDayClick(day)}
           className={`min-h-20 md:min-h-24 p-1 border border-gray-200 cursor-pointer hover:bg-cyan-50 transition-colors ${
-            isToday ? 'ring-2 ring-cyan-500 bg-cyan-50' : 'bg-white'
+            isToday ? 'ring-2 ring-cyan-500 bg-cyan-50' : isPast ? 'bg-gray-300' : 'bg-white'
           }`}
         >
-          <div className={`text-sm font-medium ${isToday ? 'text-cyan-700' : 'text-gray-700'}`}>
+          <div className={`text-sm font-medium ${isToday ? 'text-cyan-700' : isPast ? 'text-gray-400' : 'text-gray-700'}`}>
             {day}
           </div>
           <div className="mt-1 space-y-0.5">
             {dayEvents.slice(0, 2).map(event => (
               <div
                 key={event.id}
-                className="text-xs bg-cyan-100 text-cyan-800 p-0.5 rounded truncate"
+                className={`text-xs p-0.5 rounded truncate ${isPast ? 'bg-gray-400 text-gray-500' : 'bg-cyan-100 text-cyan-800'}`}
               >
                 {event.event_time && (
                   <span className="font-bold">{event.event_time.slice(0, 5)} </span>
@@ -253,20 +256,23 @@ export default function CalendarPage() {
               {dayEvents.length > 0 && (
                 <div className="space-y-2">
                   <h4 className="font-semibold text-gray-700 text-sm">Eventos del día:</h4>
-                  {dayEvents.map(event => (
-                    <div key={event.id} className="bg-gray-50 p-3 rounded-lg">
+                  {dayEvents.map(event => {
+                    const isPastEvent = event.event_date.slice(0, 10) < todayStr;
+                    return (
+                    <div key={event.id} className={`p-3 rounded-lg ${isPastEvent ? 'bg-gray-100' : 'bg-gray-50'}`}>
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <div className="font-medium text-gray-800">
+                          <div className={`font-medium ${isPastEvent ? 'text-gray-500' : 'text-gray-800'}`}>
                             {event.event_time && (
-                              <span className="text-cyan-600 font-bold">{event.event_time.slice(0, 5)} </span>
+                              <span className={isPastEvent ? 'text-gray-400 font-bold' : 'text-cyan-600 font-bold'}>{event.event_time.slice(0, 5)} </span>
                             )}
                             {event.title}
                           </div>
                           {event.details && (
-                            <div className="text-sm text-gray-600 mt-1">{event.details}</div>
+                            <div className={`text-sm mt-1 ${isPastEvent ? 'text-gray-400' : 'text-gray-600'}`}>{event.details}</div>
                           )}
                         </div>
+                        {!isPastEvent && (
                         <div className="flex gap-3 ml-2">
                           <button
                             onClick={() => startEdit(event)}
@@ -281,9 +287,11 @@ export default function CalendarPage() {
                             Borrar
                           </button>
                         </div>
+                        )}
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 

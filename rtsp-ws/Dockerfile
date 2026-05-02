@@ -12,6 +12,6 @@ RUN npm install --production
 # Copy server code
 COPY server.js ./
 
-EXPOSE 9000 9001
+EXPOSE 9002
 
 CMD ["node", "server.js"]

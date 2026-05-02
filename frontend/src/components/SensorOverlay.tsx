@@ -14,14 +14,14 @@ export default function SensorOverlay({ temperature, humidity, volume, isFullscr
         {/* Temperature */}
         {temperature !== undefined && (
           <div className="flex items-center gap-1">
-            <span className="text-white font-bold drop-shadow-lg text-xs md:text-sm border-b border-white/50 pb-1">🌡️ {temperature}°C</span>
+            <span className="text-white font-bold drop-shadow-lg text-xs md:text-sm bg-black/40 px-1.5 py-0.5 rounded">🌡️ {temperature}°C</span>
           </div>
         )}
         
         {/* Humidity */}
         {humidity !== undefined && (
           <div className="flex items-center gap-1">
-            <span className="text-white font-bold drop-shadow-lg text-xs md:text-sm border-b border-white/50 pb-1">💧 {humidity}%</span>
+            <span className="text-white font-bold drop-shadow-lg text-xs md:text-sm bg-black/40 px-1.5 py-0.5 rounded">💧 {humidity}%</span>
           </div>
         )}
 
