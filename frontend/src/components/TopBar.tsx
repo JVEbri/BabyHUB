@@ -14,7 +14,7 @@ interface TopBarProps {
 
 export default function TopBar({ tabs, activeTab, onTabChange }: TopBarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-slate-900 text-white border-b border-dark-border shadow-lg">
+    <header className="fixed top-0 left-0 right-0 bg-slate-900 text-white border-b border-dark-border shadow-lg z-[100]">
       <div className="flex items-center justify-around md:justify-center md:space-x-8 px-2 py-2 md:py-3">
         {tabs.map((t) => (
           <Link
