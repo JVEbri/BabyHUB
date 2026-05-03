@@ -53,7 +53,7 @@ function timeAgo(dateString: string | undefined): string {
 
 function getButtonStatus(button: Button): { bgColor: string; textColor: string; text: string } {
   if (!button.last_pressed_at) {
-    return { bgColor: "bg-gray-100", textColor: "text-gray-600", text: "Nunca pulsado" };
+    return { bgColor: "bg-gray-500/20", textColor: "text-gray-400", text: "Nunca pulsado" };
   }
 
   const now = new Date();
@@ -62,17 +62,17 @@ function getButtonStatus(button: Button): { bgColor: string; textColor: string; 
   const diffHours = diffMs / (1000 * 60 * 60);
 
   if (!button.interval_hours) {
-    return { bgColor: "bg-blue-50", textColor: "text-blue-600", text: timeAgo(button.last_pressed_at) };
+    return { bgColor: "bg-blue-500/20", textColor: "text-blue-400", text: timeAgo(button.last_pressed_at) };
   }
 
   const ratio = diffHours / button.interval_hours;
 
   if (ratio >= 1) {
-    return { bgColor: "bg-red-50", textColor: "text-red-600", text: `Pasado! ${timeAgo(button.last_pressed_at)}` };
+    return { bgColor: "bg-red-500/20", textColor: "text-red-400", text: `Pasado! ${timeAgo(button.last_pressed_at)}` };
   } else if (ratio >= 0.75) {
-    return { bgColor: "bg-yellow-50", textColor: "text-yellow-600", text: `Proximo ${timeAgo(button.last_pressed_at)}` };
+    return { bgColor: "bg-yellow-500/20", textColor: "text-yellow-400", text: `Proximo ${timeAgo(button.last_pressed_at)}` };
   } else {
-    return { bgColor: "bg-green-50", textColor: "text-green-600", text: timeAgo(button.last_pressed_at) };
+    return { bgColor: "bg-green-500/20", textColor: "text-green-400", text: timeAgo(button.last_pressed_at) };
   }
 }
 
@@ -143,9 +143,14 @@ export default function DashboardPage() {
   }, []);
 
   const getNextEvents = () => {
-    const now = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     return events
-      .filter(e => new Date(e.event_date) >= now)
+      .filter(e => {
+        const eventDate = new Date(e.event_date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today;
+      })
       .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())
       .slice(0, 5);
   };
@@ -252,9 +257,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Calendar Events - Compact */}
-          <div className="bg-dark-card rounded-lg shadow p-2 flex-1 overflow-hidden border border-dark-border">
+          <div className="bg-dark-card rounded-lg shadow p-2 border border-dark-border">
             <h4 className="font-bold text-xs mb-1">Eventos</h4>
-            <div className="overflow-y-auto max-h-32 space-y-1">
+            <div className="max-h-24 overflow-y-auto space-y-1">
               {getNextEvents().map(event => (
                 <div key={event.id} className="text-xs border-b border-gray-100 pb-1">
                   <div className="font-medium truncate">{event.title}</div>

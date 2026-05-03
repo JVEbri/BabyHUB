@@ -22,7 +22,7 @@ export default function TopBar({ tabs, activeTab, onTabChange }: TopBarProps) {
             to={`/${t.id}`}
             onClick={() => onTabChange(t.id)}
             className={`flex flex-col items-center p-1 md:p-2 min-w-0 transition-colors ${
-              activeTab === t.id ? "text-cyan-400 font-bold" : "text-white/70 hover:text-white"
+              activeTab === t.id ? "text-cyan-400 font-bold" : "text-white hover:text-cyan-400"
             }`}
           >
             <span className="text-xl md:text-2xl">{t.icon}</span>

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import EmojiPicker from "../components/EmojiPicker";
 import ConfirmModal from "../components/ConfirmModal";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+import { API_URL } from "../config";
 
 interface Button {
   id: string;
@@ -34,8 +33,8 @@ function getButtonStatus(button: Button): {
 } {
   if (!button.last_pressed_at) {
     return {
-      bgColor: "bg-gray-100",
-      textColor: "text-gray-600",
+      bgColor: "bg-gray-500/20",
+      textColor: "text-gray-400",
       text: "Nunca pulsado",
     };
   }
@@ -47,8 +46,8 @@ function getButtonStatus(button: Button): {
 
   if (!button.interval_hours) {
     return {
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-600",
+      bgColor: "bg-blue-500/20",
+      textColor: "text-blue-400",
       text: timeAgo(button.last_pressed_at),
     };
   }
@@ -57,23 +56,35 @@ function getButtonStatus(button: Button): {
 
   if (ratio >= 1) {
     return {
-      bgColor: "bg-red-50",
-      textColor: "text-red-600",
+      bgColor: "bg-red-500/20",
+      textColor: "text-red-400",
       text: `¡Pasado! ${timeAgo(button.last_pressed_at)}`,
     };
   } else if (ratio >= 0.75) {
     return {
-      bgColor: "bg-yellow-50",
-      textColor: "text-yellow-600",
+      bgColor: "bg-yellow-500/20",
+      textColor: "text-yellow-400",
       text: `Próximo ${timeAgo(button.last_pressed_at)}`,
     };
   } else {
     return {
-      bgColor: "bg-green-50",
-      textColor: "text-green-600",
+      bgColor: "bg-green-500/20",
+      textColor: "text-green-400",
       text: timeAgo(button.last_pressed_at),
     };
   }
+}
+
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return '';
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) return `${days}d ${hours % 24}h`;
+  if (hours > 0) return `${hours}h ${minutes % 60}m`;
+  if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+  return `${seconds}s`;
 }
 
 export default function ButtonsPage() {
@@ -83,6 +94,7 @@ export default function ButtonsPage() {
   const [newInterval, setNewInterval] = useState<string>("");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
     fetchButtons();
@@ -90,10 +102,29 @@ export default function ButtonsPage() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getCountdown = (btn: Button): string | null => {
+    if (!btn.interval_hours || !btn.last_pressed_at) return null;
+    const last = new Date(btn.last_pressed_at);
+    const next = new Date(last.getTime() + btn.interval_hours * 60 * 60 * 1000);
+    const diff = next.getTime() - now.getTime();
+    if (diff <= 0) return null;
+    return formatCountdown(diff);
+  };
+
+  // Load buttons from API
   const fetchButtons = async () => {
-    const res = await fetch(`${API_URL}/api/buttons`);
-    const data = await res.json();
-    setButtons(data);
+    try {
+      const res = await fetch(`${API_URL}/api/buttons`);
+      const data = await res.json();
+      setButtons(data);
+    } catch (error) {
+      console.error("Error fetching buttons:", error);
+    }
   };
 
   const pressButton = async (id: string) => {
@@ -135,7 +166,7 @@ export default function ButtonsPage() {
             placeholder="Etiqueta (ej: Biberón, Apiretal)"
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-800"
           />
           <button
             onClick={() => setShowEmojiPicker(true)}
@@ -149,9 +180,7 @@ export default function ButtonsPage() {
             placeholder="Intervalo (h)"
             value={newInterval}
             onChange={(e) => setNewInterval(e.target.value)}
-            min="0"
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            title="Horas entre recordatorios (opcional)"
+            className="border text-black border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
           />
           <button
             onClick={addButton}
@@ -169,7 +198,7 @@ export default function ButtonsPage() {
           return (
             <div
               key={btn.id}
-              className={`p-4 rounded-lg shadow border-2 ${status.bgColor} flex flex-col h-48 bg-dark-card border-dark-border`}
+              className={`p-4 rounded-lg shadow border-2 flex flex-col h-48 ${status.bgColor} bg-dark-card border-dark-border`}
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
@@ -184,6 +213,14 @@ export default function ButtonsPage() {
                         Cada {btn.interval_hours}h
                       </div>
                     )}
+                    {(() => {
+                      const countdown = getCountdown(btn);
+                      return countdown ? (
+                        <div className="text-xs text-cyan-600 font-mono mt-1">
+                          ⏱ {countdown}
+                        </div>
+                      ) : null;
+                    })()}
                   </div>
                 </div>
                 <button

@@ -56,11 +56,6 @@ export default function InventoryPage() {
     fetchItems();
   };
 
-  const startEdit = (item: InventoryItem) => {
-    setEditingId(item.id);
-    setEditQty(item.quantity.toString());
-  };
-
   const saveEdit = async () => {
     if (!editingId) return;
     await fetch(`${API_URL}/api/inventory-items/${editingId}`, {
@@ -96,21 +91,21 @@ export default function InventoryPage() {
             placeholder="Nombre"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-800"
           />
-          <input
-            type="number"
-            placeholder="Cantidad"
-            value={newQty}
-            onChange={(e) => setNewQty(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          />
+           <input
+             type="number"
+             placeholder="Cantidad"
+             value={newQty}
+             onChange={(e) => setNewQty(e.target.value)}
+             className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-gray-900"
+           />
           <input
             type="number"
             placeholder="Aviso stock bajo (opcional)"
             value={newThreshold}
             onChange={(e) => setNewThreshold(e.target.value)}
-            className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="border text-black border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
           />
           <button
             onClick={addItem}
@@ -156,12 +151,12 @@ export default function InventoryPage() {
                 <td className="p-4 text-center">
                   {editingId === item.id ? (
                     <div className="flex items-center justify-center gap-2">
-                      <input
-                        type="number"
-                        value={editQty}
-                        onChange={(e) => setEditQty(e.target.value)}
-                        className="w-20 border border-gray-300 rounded px-2 py-1"
-                      />
+                        <input
+                          type="number"
+                          value={editQty}
+                          onChange={(e) => setEditQty(e.target.value)}
+                          className="w-20 border border-gray-300 rounded px-2 py-1 text-gray-900"
+                        />
                       <button
                         onClick={saveEdit}
                         className="text-cyan-600 text-sm"
@@ -176,14 +171,28 @@ export default function InventoryPage() {
                       </button>
                     </div>
                   ) : (
-                    <span
-                      className={`font-bold text-lg ${item.low_stock_threshold && item.quantity <= item.low_stock_threshold ? "text-red-600" : "text-cyan-700"}`}
-                    >
-                      {item.quantity}{" "}
-                      <span className="text-sm font-normal text-gray-500">
-                        pcs
+                    <div className="flex items-center justify-center gap-3">
+                      <button
+                        onClick={() => updateStock(item.id, -1)}
+                        className="bg-red-900/50 text-red-400 px-3 py-1 rounded hover:bg-red-900 transition-colors text-sm"
+                      >
+                        -1
+                      </button>
+                      <span
+                        className={`font-bold text-lg ${item.low_stock_threshold && item.quantity <= item.low_stock_threshold ? "text-red-400" : "text-cyan-400"}`}
+                      >
+                        {item.quantity}{" "}
+                        <span className="text-sm font-normal text-gray-400">
+                          pcs
+                        </span>
                       </span>
-                    </span>
+                      <button
+                        onClick={() => updateStock(item.id, 1)}
+                        className="bg-green-900/50 text-green-400 px-3 py-1 rounded hover:bg-green-900 transition-colors text-sm"
+                      >
+                        +1
+                      </button>
+                    </div>
                   )}
                 </td>
                 <td className="p-4 text-center">
@@ -198,24 +207,6 @@ export default function InventoryPage() {
                 </td>
                 <td className="p-4">
                   <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => updateStock(item.id, -1)}
-                      className="bg-red-50 text-red-600 px-3 py-1 rounded hover:bg-red-100 transition-colors text-sm"
-                    >
-                      -1
-                    </button>
-                    <button
-                      onClick={() => updateStock(item.id, 1)}
-                      className="bg-green-50 text-green-600 px-3 py-1 rounded hover:bg-green-100 transition-colors text-sm"
-                    >
-                      +1
-                    </button>
-                    <button
-                      onClick={() => startEdit(item)}
-                      className="text-cyan-600 hover:text-cyan-800 text-sm"
-                    >
-                      Editar
-                    </button>
                     <button
                       onClick={() => setDeleteId(item.id)}
                       className="text-red-500 hover:text-red-700 text-sm"

@@ -23,7 +23,7 @@ export default function CalendarPage() {
   const [dayEvents, setDayEvents] = useState<CalendarEvent[]>([]);
 
   const today = new Date();
-  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   useEffect(() => {
     fetchEvents();
@@ -32,11 +32,13 @@ export default function CalendarPage() {
   const fetchEvents = async () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
-    const from = `${year}-${String(month).padStart(2, '0')}-01`;
+    const from = `${year}-${String(month).padStart(2, "0")}-01`;
     const lastDay = new Date(year, currentDate.getMonth() + 1, 0).getDate();
-    const to = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-    
-    const res = await fetch(`${API_URL}/api/calendar-events?from=${from}&to=${to}`);
+    const to = `${year}-${String(month).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+
+    const res = await fetch(
+      `${API_URL}/api/calendar-events?from=${from}&to=${to}`,
+    );
     const data = await res.json();
     setEvents(data);
   };
@@ -51,7 +53,7 @@ export default function CalendarPage() {
 
   const saveEvent = async () => {
     if (!newTitle || !selectedDate) return;
-    
+
     const body = {
       title: newTitle,
       event_date: selectedDate,
@@ -88,14 +90,22 @@ export default function CalendarPage() {
 
   const confirmDelete = async () => {
     if (!deleteId) return;
-    await fetch(`${API_URL}/api/calendar-events/${deleteId}`, { method: "DELETE" });
+    await fetch(`${API_URL}/api/calendar-events/${deleteId}`, {
+      method: "DELETE",
+    });
     setDeleteId(null);
     fetchEvents();
     openDayModal(selectedDate, getEventsForDate(selectedDate));
   };
 
-  const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-  const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+  const nextMonth = () =>
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1),
+    );
+  const prevMonth = () =>
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1),
+    );
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -107,7 +117,7 @@ export default function CalendarPage() {
   };
 
   const getEventsForDate = (dateStr: string) => {
-    return events.filter(e => e.event_date.slice(0, 10) === dateStr);
+    return events.filter((e) => e.event_date.slice(0, 10) === dateStr);
   };
 
   const openDayModal = (dateStr: string, eventsForDay: CalendarEvent[]) => {
@@ -118,7 +128,7 @@ export default function CalendarPage() {
   };
 
   const handleDayClick = (day: number) => {
-    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     const eventsForDay = getEventsForDate(dateStr);
     openDayModal(dateStr, eventsForDay);
   };
@@ -127,48 +137,67 @@ export default function CalendarPage() {
     const daysInMonth = getDaysInMonth(currentDate);
     const firstDay = getFirstDayOfMonth(currentDate);
     const days = [];
-    const dayNames = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    const dayNames = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
-    const headers = dayNames.map(day => (
-      <div key={day} className="p-2 text-center font-bold text-cyan-700 text-sm">
+    const headers = dayNames.map((day) => (
+      <div
+        key={day}
+        className="p-2 text-center font-bold text-cyan-700 text-sm"
+      >
         {day}
       </div>
     ));
 
     for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="bg-gray-50 min-h-20 md:min-h-24"></div>);
+      days.push(
+        <div
+          key={`empty-${i}`}
+          className="bg-gray-50 min-h-20 md:min-h-24"
+        ></div>,
+      );
     }
 
     const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
     for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayEvents = events.filter(e => e.event_date.slice(0, 10) === dateStr);
-      const isToday = today.getDate() === day && 
-                       today.getMonth() === currentDate.getMonth() && 
-                       today.getFullYear() === currentDate.getFullYear();
+      const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+      const dayEvents = events.filter(
+        (e) => e.event_date.slice(0, 10) === dateStr,
+      );
+      const isToday =
+        today.getDate() === day &&
+        today.getMonth() === currentDate.getMonth() &&
+        today.getFullYear() === currentDate.getFullYear();
       const isPast = dateStr < todayStr;
-      
+
       days.push(
         <div
           key={day}
           onClick={() => handleDayClick(day)}
           className={`min-h-20 md:min-h-24 p-1 border border-gray-200 cursor-pointer hover:bg-cyan-50 transition-colors ${
-            isToday ? 'ring-2 ring-cyan-500 bg-cyan-50' : isPast ? 'bg-gray-400' : 'bg-white'
+            isToday
+              ? "ring-2 ring-cyan-500 bg-cyan-50"
+              : isPast
+                ? "bg-gray-400"
+                : "bg-white"
           }`}
         >
-          <div className={`text-sm font-medium ${isToday ? 'text-cyan-700' : isPast ? 'text-white' : 'text-gray-700'}`}>
+          <div
+            className={`text-sm font-medium ${isToday ? "text-cyan-700" : isPast ? "text-white" : "text-gray-700"}`}
+          >
             {day}
           </div>
           <div className="mt-1 space-y-0.5">
-            {dayEvents.slice(0, 2).map(event => (
+            {dayEvents.slice(0, 2).map((event) => (
               <div
                 key={event.id}
-                className={`text-xs p-0.5 rounded truncate ${isPast ? 'bg-gray-500 text-gray-300' : 'bg-cyan-100 text-cyan-800'}`}
+                className={`text-xs p-0.5 rounded truncate ${isPast ? "bg-gray-500 text-gray-300" : "bg-cyan-100 text-cyan-800"}`}
               >
                 {event.event_time && (
-                  <span className="font-bold">{event.event_time.slice(0, 5)} </span>
+                  <span className="font-bold">
+                    {event.event_time.slice(0, 5)}{" "}
+                  </span>
                 )}
                 {event.title}
               </div>
@@ -179,7 +208,7 @@ export default function CalendarPage() {
               </div>
             )}
           </div>
-        </div>
+        </div>,
       );
     }
 
@@ -187,21 +216,49 @@ export default function CalendarPage() {
   };
 
   const { headers, days } = renderCalendar();
-  const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-  
-  const formattedDate = selectedDate 
-    ? new Date(selectedDate + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-    : '';
+  const monthNames = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  const formattedDate = selectedDate
+    ? new Date(selectedDate + "T00:00:00").toLocaleDateString("es-ES", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "";
 
   return (
     <div>
       {/* Month navigation */}
       <div className="flex justify-between items-center mb-4 bg-dark-card p-3 rounded-lg shadow border border-dark-border">
-        <button onClick={prevMonth} className="text-cyan-700 hover:text-cyan-800 text-xl px-2">←</button>
+        <button
+          onClick={prevMonth}
+          className="text-cyan-700 hover:text-cyan-800 text-xl px-2"
+        >
+          ←
+        </button>
         <h3 className="text-lg font-bold text-cyan-700">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h3>
-        <button onClick={nextMonth} className="text-cyan-700 hover:text-cyan-800 text-xl px-2">→</button>
+        <button
+          onClick={nextMonth}
+          className="text-cyan-700 hover:text-cyan-800 text-xl px-2"
+        >
+          →
+        </button>
       </div>
 
       {/* Calendar grid */}
@@ -209,9 +266,7 @@ export default function CalendarPage() {
         <div className="grid grid-cols-7 bg-dark-card border-b border-dark-border">
           {headers}
         </div>
-        <div className="grid grid-cols-7">
-          {days}
-        </div>
+        <div className="grid grid-cols-7">{days}</div>
       </div>
 
       {/* Day modal - shows events for that day + add new */}
@@ -254,41 +309,61 @@ export default function CalendarPage() {
               {/* Existing events */}
               {dayEvents.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-gray-700 text-sm">Eventos del día:</h4>
-                  {dayEvents.map(event => {
-                    const isPastEvent = event.event_date.slice(0, 10) < todayStr;
+                  <h4 className="font-semibold text-gray-700 text-sm">
+                    Eventos del día:
+                  </h4>
+                  {dayEvents.map((event) => {
+                    const isPastEvent =
+                      event.event_date.slice(0, 10) < todayStr;
                     return (
-                    <div key={event.id} className={`p-3 rounded-lg ${isPastEvent ? 'bg-gray-100' : 'bg-gray-50'}`}>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className={`font-medium ${isPastEvent ? 'text-gray-500' : 'text-gray-800'}`}>
-                            {event.event_time && (
-                              <span className={isPastEvent ? 'text-gray-400 font-bold' : 'text-cyan-600 font-bold'}>{event.event_time.slice(0, 5)} </span>
+                      <div
+                        key={event.id}
+                        className={`p-3 rounded-lg ${isPastEvent ? "bg-gray-100" : "bg-gray-50"}`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div
+                              className={`font-medium ${isPastEvent ? "text-gray-500" : "text-gray-800"}`}
+                            >
+                              {event.event_time && (
+                                <span
+                                  className={
+                                    isPastEvent
+                                      ? "text-gray-400 font-bold"
+                                      : "text-cyan-600 font-bold"
+                                  }
+                                >
+                                  {event.event_time.slice(0, 5)}{" "}
+                                </span>
+                              )}
+                              {event.title}
+                            </div>
+                            {event.details && (
+                              <div
+                                className={`text-sm mt-1 ${isPastEvent ? "text-gray-400" : "text-gray-600"}`}
+                              >
+                                {event.details}
+                              </div>
                             )}
-                            {event.title}
                           </div>
-                          {event.details && (
-                            <div className={`text-sm mt-1 ${isPastEvent ? 'text-gray-400' : 'text-gray-600'}`}>{event.details}</div>
+                          {!isPastEvent && (
+                            <div className="flex gap-3 ml-2">
+                              <button
+                                onClick={() => startEdit(event)}
+                                className="text-blue-500 hover:text-blue-700 text-sm font-medium"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => setDeleteId(event.id)}
+                                className="text-red-500 hover:text-red-700 text-sm font-medium"
+                              >
+                                Borrar
+                              </button>
+                            </div>
                           )}
                         </div>
-                        {!isPastEvent && (
-                        <div className="flex gap-3 ml-2">
-                          <button
-                            onClick={() => startEdit(event)}
-                            className="text-blue-500 hover:text-blue-700 text-sm font-medium"
-                          >
-                            Editar
-                          </button>
-                          <button
-                            onClick={() => setDeleteId(event.id)}
-                            className="text-red-500 hover:text-red-700 text-sm font-medium"
-                          >
-                            Borrar
-                          </button>
-                        </div>
-                        )}
                       </div>
-                    </div>
                     );
                   })}
                 </div>
@@ -309,7 +384,7 @@ export default function CalendarPage() {
         <div className="fixed inset-0 bg-black/50 flex items-end md:items-center justify-center z-[60] md:pt-4">
           <div className="bg-white rounded-t-2xl md:rounded-2xl w-full md:max-w-md mx-auto shadow-xl p-6">
             <h3 className="text-lg font-bold mb-4">
-              {editId ? 'Editar evento' : 'Nuevo evento'}
+              {editId ? "Editar evento" : "Nuevo evento"}
             </h3>
             <div className="space-y-3">
               <input
@@ -349,7 +424,7 @@ export default function CalendarPage() {
                 onClick={saveEvent}
                 className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700 transition-colors"
               >
-                {editId ? 'Actualizar' : 'Guardar'}
+                {editId ? "Actualizar" : "Guardar"}
               </button>
             </div>
           </div>
@@ -361,7 +436,9 @@ export default function CalendarPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[70]">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
             <h3 className="text-lg font-bold mb-2">Confirmar borrado</h3>
-            <p className="text-gray-600 mb-6">¿Estás seguro de que quieres borrar este evento?</p>
+            <p className="text-gray-600 mb-6">
+              ¿Estás seguro de que quieres borrar este evento?
+            </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setDeleteId(null)}
