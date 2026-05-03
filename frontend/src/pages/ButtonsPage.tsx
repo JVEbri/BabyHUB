@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import EmojiPicker from "../components/EmojiPicker";
 import ConfirmModal from "../components/ConfirmModal";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 interface Button {
   id: string;
@@ -27,9 +27,17 @@ function timeAgo(dateString: string | undefined): string {
   return `hace ${diffDays} días`;
 }
 
-function getButtonStatus(button: Button): { bgColor: string; textColor: string; text: string } {
+function getButtonStatus(button: Button): {
+  bgColor: string;
+  textColor: string;
+  text: string;
+} {
   if (!button.last_pressed_at) {
-    return { bgColor: "bg-gray-100", textColor: "text-gray-600", text: "Nunca pulsado" };
+    return {
+      bgColor: "bg-gray-100",
+      textColor: "text-gray-600",
+      text: "Nunca pulsado",
+    };
   }
 
   const now = new Date();
@@ -38,17 +46,33 @@ function getButtonStatus(button: Button): { bgColor: string; textColor: string; 
   const diffHours = diffMs / (1000 * 60 * 60);
 
   if (!button.interval_hours) {
-    return { bgColor: "bg-blue-50", textColor: "text-blue-600", text: timeAgo(button.last_pressed_at) };
+    return {
+      bgColor: "bg-blue-50",
+      textColor: "text-blue-600",
+      text: timeAgo(button.last_pressed_at),
+    };
   }
 
-  const ratio = diffHours / button.interval_hours;  
-  
+  const ratio = diffHours / button.interval_hours;
+
   if (ratio >= 1) {
-    return { bgColor: "bg-red-50", textColor: "text-red-600", text: `¡Pasado! ${timeAgo(button.last_pressed_at)}` };
+    return {
+      bgColor: "bg-red-50",
+      textColor: "text-red-600",
+      text: `¡Pasado! ${timeAgo(button.last_pressed_at)}`,
+    };
   } else if (ratio >= 0.75) {
-    return { bgColor: "bg-yellow-50", textColor: "text-yellow-600", text: `Próximo ${timeAgo(button.last_pressed_at)}` };
+    return {
+      bgColor: "bg-yellow-50",
+      textColor: "text-yellow-600",
+      text: `Próximo ${timeAgo(button.last_pressed_at)}`,
+    };
   } else {
-    return { bgColor: "bg-green-50", textColor: "text-green-600", text: timeAgo(button.last_pressed_at) };
+    return {
+      bgColor: "bg-green-50",
+      textColor: "text-green-600",
+      text: timeAgo(button.last_pressed_at),
+    };
   }
 }
 
@@ -103,11 +127,9 @@ export default function ButtonsPage() {
 
   return (
     <div>
-      <h2 className="text-xl md:text-2xl font-bold mb-4 text-dark-text">Recordatorios</h2>
-      
       {/* Add button form */}
-      <div className="bg-white p-4 rounded-lg shadow mb-4 space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div className="bg-dark-card p-3 md:p-2 rounded-lg shadow mb-4 border border-dark-border">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           <input
             type="text"
             placeholder="Etiqueta (ej: Biberón, Apiretal)"
@@ -145,7 +167,7 @@ export default function ButtonsPage() {
         {buttons.map((btn) => {
           const status = getButtonStatus(btn);
           return (
-                <div
+            <div
               key={btn.id}
               className={`p-4 rounded-lg shadow border-2 ${status.bgColor} flex flex-col h-48 bg-dark-card border-dark-border`}
             >

@@ -46,7 +46,7 @@ function App() {
     <div className="min-h-screen bg-dark-bg text-dark-text pt-14 md:pt-16">
       <TopBar tabs={TABS} activeTab={tab} onTabChange={handleTabChange} />
 
-      <main className="container mx-auto px-2 md:px-4 py-4 md:py-6 pb-20 md:pb-6">
+      <main className="container mx-auto px-2 md:px-4 py-4 md:py-6 pb-20 md:pb-6 pt-16 md:pt-20">
         {tab === "dashboard" && <DashboardPage />}
         {tab === "cameras" && <CameraPage />}
         {tab === "reminders" && <ButtonsPage />}

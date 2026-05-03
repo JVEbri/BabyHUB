@@ -14,7 +14,7 @@ interface TopBarProps {
 
 export default function TopBar({ tabs, activeTab, onTabChange }: TopBarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 bg-dark-bg text-dark-text border-b border-dark-border shadow-lg">
+    <header className="fixed top-0 left-0 right-0 bg-slate-900 text-white border-b border-dark-border shadow-lg">
       <div className="flex items-center justify-around md:justify-center md:space-x-8 px-2 py-2 md:py-3">
         {tabs.map((t) => (
           <Link
@@ -22,7 +22,7 @@ export default function TopBar({ tabs, activeTab, onTabChange }: TopBarProps) {
             to={`/${t.id}`}
             onClick={() => onTabChange(t.id)}
             className={`flex flex-col items-center p-1 md:p-2 min-w-0 transition-colors ${
-              activeTab === t.id ? "text-dark-accent font-bold" : "text-dark-muted hover:text-dark-text"
+              activeTab === t.id ? "text-cyan-400 font-bold" : "text-white/70 hover:text-white"
             }`}
           >
             <span className="text-xl md:text-2xl">{t.icon}</span>

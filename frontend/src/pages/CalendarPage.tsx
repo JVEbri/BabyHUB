@@ -130,7 +130,7 @@ export default function CalendarPage() {
     const dayNames = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
     const headers = dayNames.map(day => (
-      <div key={day} className="p-2 text-center font-bold text-cyan-800 text-sm">
+      <div key={day} className="p-2 text-center font-bold text-cyan-700 text-sm">
         {day}
       </div>
     ));
@@ -138,6 +138,9 @@ export default function CalendarPage() {
     for (let i = 0; i < firstDay; i++) {
       days.push(<div key={`empty-${i}`} className="bg-gray-50 min-h-20 md:min-h-24"></div>);
     }
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -152,17 +155,17 @@ export default function CalendarPage() {
           key={day}
           onClick={() => handleDayClick(day)}
           className={`min-h-20 md:min-h-24 p-1 border border-gray-200 cursor-pointer hover:bg-cyan-50 transition-colors ${
-            isToday ? 'ring-2 ring-cyan-500 bg-cyan-50' : isPast ? 'bg-gray-300' : 'bg-white'
+            isToday ? 'ring-2 ring-cyan-500 bg-cyan-50' : isPast ? 'bg-gray-400' : 'bg-white'
           }`}
         >
-          <div className={`text-sm font-medium ${isToday ? 'text-cyan-700' : isPast ? 'text-gray-400' : 'text-gray-700'}`}>
+          <div className={`text-sm font-medium ${isToday ? 'text-cyan-700' : isPast ? 'text-white' : 'text-gray-700'}`}>
             {day}
           </div>
           <div className="mt-1 space-y-0.5">
             {dayEvents.slice(0, 2).map(event => (
               <div
                 key={event.id}
-                className={`text-xs p-0.5 rounded truncate ${isPast ? 'bg-gray-400 text-gray-500' : 'bg-cyan-100 text-cyan-800'}`}
+                className={`text-xs p-0.5 rounded truncate ${isPast ? 'bg-gray-500 text-gray-300' : 'bg-cyan-100 text-cyan-800'}`}
               >
                 {event.event_time && (
                   <span className="font-bold">{event.event_time.slice(0, 5)} </span>
@@ -192,17 +195,13 @@ export default function CalendarPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 text-dark-text">
-        <h2 className="text-xl md:text-2xl font-bold text-cyan-700">Calendario</h2>
-      </div>
-
       {/* Month navigation */}
       <div className="flex justify-between items-center mb-4 bg-dark-card p-3 rounded-lg shadow border border-dark-border">
-        <button onClick={prevMonth} className="text-cyan-600 hover:text-cyan-800 text-xl px-2">←</button>
-        <h3 className="text-lg font-bold text-cyan-800">
+        <button onClick={prevMonth} className="text-cyan-700 hover:text-cyan-800 text-xl px-2">←</button>
+        <h3 className="text-lg font-bold text-cyan-700">
           {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
         </h3>
-        <button onClick={nextMonth} className="text-cyan-600 hover:text-cyan-800 text-xl px-2">→</button>
+        <button onClick={nextMonth} className="text-cyan-700 hover:text-cyan-800 text-xl px-2">→</button>
       </div>
 
       {/* Calendar grid */}

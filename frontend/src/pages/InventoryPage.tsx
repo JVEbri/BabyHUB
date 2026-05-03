@@ -49,7 +49,9 @@ export default function InventoryPage() {
 
   const confirmDelete = async () => {
     if (!deleteId) return;
-    await fetch(`${API_URL}/api/inventory-items/${deleteId}`, { method: "DELETE" });
+    await fetch(`${API_URL}/api/inventory-items/${deleteId}`, {
+      method: "DELETE",
+    });
     setDeleteId(null);
     fetchItems();
   };
@@ -75,7 +77,7 @@ export default function InventoryPage() {
     const item = await res.json();
     const newQty = item.quantity + delta;
     if (newQty < 0) return;
-    
+
     await fetch(`${API_URL}/api/inventory-items/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -86,10 +88,8 @@ export default function InventoryPage() {
 
   return (
     <div>
-      <h2 className="text-xl md:text-2xl font-bold mb-4 text-dark-text">Stock</h2>
-      
       {/* Add item form */}
-      <div className="bg-dark-card p-4 rounded-lg shadow mb-4 border border-dark-border">
+      <div className="bg-dark-card p-3 md:p-2 rounded-lg shadow mb-4 border border-dark-border">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
           <input
             type="text"
@@ -127,19 +127,31 @@ export default function InventoryPage() {
           <thead className="bg-cyan-50 border-b border-cyan-100">
             <tr>
               <th className="text-left p-4 font-bold text-cyan-800">Nombre</th>
-              <th className="text-center p-4 font-bold text-cyan-800">Cantidad</th>
-              <th className="text-center p-4 font-bold text-cyan-800">Estado</th>
-              <th className="text-right p-4 font-bold text-cyan-800">Acciones</th>
+              <th className="text-center p-4 font-bold text-cyan-800">
+                Cantidad
+              </th>
+              <th className="text-center p-4 font-bold text-cyan-800">
+                Estado
+              </th>
+              <th className="text-right p-4 font-bold text-cyan-800">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <tr
+                key={item.id}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
                 <td className="p-4">
                   <span className="font-medium">{item.name}</span>
-                  {item.low_stock_threshold && item.quantity <= item.low_stock_threshold && (
-                    <span className="ml-2 text-red-500 text-sm">⚠️ Stock bajo</span>
-                  )}
+                  {item.low_stock_threshold &&
+                    item.quantity <= item.low_stock_threshold && (
+                      <span className="ml-2 text-red-500 text-sm">
+                        ⚠️ Stock bajo
+                      </span>
+                    )}
                 </td>
                 <td className="p-4 text-center">
                   {editingId === item.id ? (
@@ -150,18 +162,36 @@ export default function InventoryPage() {
                         onChange={(e) => setEditQty(e.target.value)}
                         className="w-20 border border-gray-300 rounded px-2 py-1"
                       />
-                      <button onClick={saveEdit} className="text-cyan-600 text-sm">✓</button>
-                      <button onClick={() => setEditingId(null)} className="text-gray-500 text-sm">✗</button>
+                      <button
+                        onClick={saveEdit}
+                        className="text-cyan-600 text-sm"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        onClick={() => setEditingId(null)}
+                        className="text-gray-500 text-sm"
+                      >
+                        ✗
+                      </button>
                     </div>
                   ) : (
-                    <span className={`font-bold text-lg ${item.low_stock_threshold && item.quantity <= item.low_stock_threshold ? 'text-red-600' : 'text-cyan-700'}`}>
-                      {item.quantity} <span className="text-sm font-normal text-gray-500">pcs</span>
+                    <span
+                      className={`font-bold text-lg ${item.low_stock_threshold && item.quantity <= item.low_stock_threshold ? "text-red-600" : "text-cyan-700"}`}
+                    >
+                      {item.quantity}{" "}
+                      <span className="text-sm font-normal text-gray-500">
+                        pcs
+                      </span>
                     </span>
                   )}
                 </td>
                 <td className="p-4 text-center">
-                  {item.low_stock_threshold && item.quantity <= item.low_stock_threshold ? (
-                    <span className="text-red-500 text-sm font-medium">⚠️ Bajo</span>
+                  {item.low_stock_threshold &&
+                  item.quantity <= item.low_stock_threshold ? (
+                    <span className="text-red-500 text-sm font-medium">
+                      ⚠️ Bajo
+                    </span>
                   ) : (
                     <span className="text-green-600 text-sm">✅ OK</span>
                   )}
