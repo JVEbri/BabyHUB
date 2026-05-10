@@ -16,8 +16,8 @@ fastify.register(cors, {
   origin: (origin, cb) => {
     // Allow requests with no origin (like mobile apps, curl, etc.)
     if (!origin) return cb(null, true);
-    // Allow localhost and local network IPs (192.168.x.x)
-    if (/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin)) {
+    // Allow localhost, local network IPs, and Tailscale IPs (100.x.x.x)
+    if (/^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|100\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin)) {
       return cb(null, true);
     }
     cb(new Error("Not allowed by CORS"), false);

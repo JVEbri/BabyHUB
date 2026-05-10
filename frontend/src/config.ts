@@ -2,8 +2,8 @@
 const getApiUrl = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   if (import.meta.env.DEV) return 'http://localhost:3000';
-  // In production, use the same host but with port 3000
-  return `${window.location.protocol}//${window.location.hostname}:3000`;
+  // Use Tailscale IP so it works from inside and outside the house
+  return 'http://100.108.219.83:3001';
 };
 
 export const API_URL = getApiUrl();
